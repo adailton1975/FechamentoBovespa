@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 import pandas as pd
 import datetime
 import yfinance as yf
@@ -118,3 +120,88 @@ print(retorno_do_ano_ppla)
 print(retorno_do_ano_ppla)
 print(retorno_do_ano_mxrf)
 # fazer os gráficos
+
+plt.style.use("cyberpunk")
+
+dados_fechamento.plot(y='PRNR3.SA', use_index=True, legend=False)
+plt.title('PRNR3')
+plt.savefig('prnr3.png', dpi=300)
+plt.show()
+
+dados_fechamento.plot(y='IRBR3.SA', use_index=True, legend=False)
+plt.title('IRBR3.SA')
+plt.savefig('IRBR3.SA.png', dpi=300)
+plt.show()
+
+dados_fechamento.plot(y='MRFG3.SA', use_index=True, legend=False)
+plt.title('MRFG3')
+plt.savefig('MRFG3.png', dpi=300)
+plt.show()
+
+dados_fechamento.plot(y='PPLA11.SA', use_index=True, legend=False)
+plt.title('PPLA11')
+plt.savefig('PPLA11.png', dpi=300)
+plt.show()
+
+dados_fechamento.plot(y='CVBI11.SA', use_index=True, legend=False)
+plt.title('CVBI11')
+plt.savefig('CVBI11.png', dpi=300)
+plt.show()
+
+dados_fechamento.plot(y='MXRF11.SA', use_index=True, legend=False)
+plt.title('MXRF11')
+plt.savefig('MXRF11.png', dpi=300)
+plt.show()
+
+
+load_dotenv()
+# enviar email
+
+password = os.environ.get("password")
+
+email = "adailton.1975@gmail.com"
+
+msg = EmailMessage()
+msg['Subject'] = "Enviando E-mail com o Python"
+msg['From'] = 'adailton.1975@gmail.com'
+msg['To'] = 'brenno@varos.com.br'
+
+msg.set_content(f'''
+Prezado diretor, segue o relatório diário: 
+                
+                "Bolsa:
+                
+                "No ano o PRNNR está tendo uma rentabilidade de {retorno_do_ano_prnr3}%, 
+                "enquanto no mês a rentabilidade é de {retorno_do_mes_prnr3}%.,
+                
+                "No último dia útil, o fechamento do PRNR foi de {retorno_do_dia_prnr3}%.,
+                "
+                "IRBR:
+                
+                "No ano o IRBR está tendo uma rentabilidade de {retorno_do_ano_irbr3}%, 
+                "enquanto no mês a rentabilidade é de {retorno_do_mes_irbr3}%.",
+                ,
+                "No último dia útil, o fechamento do IRBR foi de {retorno_do_dia_irbr3}%.
+                
+                
+                "Abs,
+            
+                "O melhor estagiário do mundo"
+''')
+
+
+# anexar o anexo
+with open('prnr3.png', 'rb') as content_file:
+    content = content_file.read()
+    msg.add_attachment(content, maintype='application',
+                       subtype='png', filename='prnr3.png')
+
+
+with open('IRBR3.SA.png', 'rb') as content_file:
+    content = content_file.read()
+    msg.add_attachment(content, maintype='application',
+                       subtype='png', filename='IRBR3.SA.png')
+
+with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+    smtp.login(email, password)
+    smtp.send_message(msg)
